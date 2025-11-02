@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
 
         // Create new user (in real app, hash password)
         const newUser = {
-            id: userIdCounter++.toString(),
+            id: userIdCounter.toString(),
             name,
             email,
             password, // In real app, hash this password
@@ -29,19 +29,23 @@ router.post('/register', async (req, res) => {
             createdAt: new Date().toISOString()
         };
 
+        // Increment counter for next user
+        userIdCounter++;
+
         users.push(newUser);
 
         // Generate simple token (in real app, use JWT)
         const token = `mock-token-${newUser.id}-${Date.now()}`;
 
         // Remove password from response
-        const { password: _, ...userWithoutPassword } = newUser;
+        const userResponse = { ...newUser };
+        delete userResponse.password;
 
         res.status(201).json({
             success: true,
             message: 'User registered successfully',
             data: {
-                user: userWithoutPassword,
+                user: userResponse,
                 token,
                 expiresIn: '7 days'
             }
@@ -82,13 +86,14 @@ router.post('/login', async (req, res) => {
         const token = `mock-token-${user.id}-${Date.now()}`;
 
         // Remove password from response
-        const { password: _, ...userWithoutPassword } = user;
+        const userResponse = { ...user };
+        delete userResponse.password;
 
         res.json({
             success: true,
             message: 'Login successful',
             data: {
-                user: userWithoutPassword,
+                user: userResponse,
                 token,
                 expiresIn: '7 days'
             }
@@ -124,6 +129,22 @@ router.get('/profile', (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching profile',
+            error: error.message
+        });
+    }
+});
+
+// POST logout (client-side token removal)
+router.post('/logout', (req, res) => {
+    try {
+        res.json({
+            success: true,
+            message: 'Logout successful. Please remove the token from client storage.'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error during logout',
             error: error.message
         });
     }
