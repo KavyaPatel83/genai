@@ -14,15 +14,19 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from frontend directory
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// MongoDB Connection
+// MongoDB Connection (optional - will work without MongoDB for now)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/resume-builder';
 
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected successfully'))
-.catch(err => console.error('MongoDB connection error:', err));
+if (MONGODB_URI && !MONGODB_URI.includes('localhost')) {
+    mongoose.connect(MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch(err => console.error('MongoDB connection error:', err));
+} else {
+    console.log('Using in-memory storage (MongoDB not configured)');
+}
 
 // Import routes
 const resumeRoutes = require('./routes/resumeRoutes');
@@ -38,8 +42,9 @@ app.use('/api/auth', authRoutes);
 app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'OK', 
-        message: 'Server is running',
-        timestamp: new Date().toISOString()
+        message: 'AI Resume Generator API is running',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0'
     });
 });
 
@@ -54,13 +59,15 @@ app.use((err, req, res, next) => {
     res.status(500).json({ 
         success: false, 
         message: 'Something went wrong!',
-        error: process.env.NODE_ENV === 'production' ? {} : err 
+        error: process.env.NODE_ENV === 'production' ? {} : err.message
     });
 });
 
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`MongoDB URL: ${MONGODB_URI}`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 MongoDB URL: ${MONGODB_URI}`);
+    console.log(`🌐 Frontend served from: ${path.join(__dirname, 'frontend')}`);
+    console.log(`✅ Health check: http://localhost:${PORT}/api/health`);
 });
