@@ -4,6 +4,7 @@ const { authenticate } = require('../middleware/auth');
 
 // Mock resume data (replace with actual database operations)
 let resumes = [];
+let resumeIdCounter = 1;
 
 // GET all resumes for authenticated user
 router.get('/', authenticate, (req, res) => {
@@ -64,7 +65,7 @@ router.post('/', authenticate, (req, res) => {
         } = req.body;
 
         const newResume = {
-            id: Date.now().toString(),
+            id: resumeIdCounter.toString(),
             userId: req.user.id,
             personalInfo: personalInfo || {},
             summary: summary || generateAISummary(personalInfo?.name, skills),
@@ -76,6 +77,9 @@ router.post('/', authenticate, (req, res) => {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
+
+        // Increment counter for next resume
+        resumeIdCounter++;
 
         resumes.push(newResume);
 
