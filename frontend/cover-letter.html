@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cover Letter Generator - GEN-AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cover Letter Specific Styles */
+        .cover-letter-container {
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cover-letter-builder {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-section {
+            padding-right: 2rem;
+            border-right: 2px solid #f0f0f0;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section h3 i {
+            color: #667eea;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 10px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .preview-header h3 {
+            color: #333;
+            margin: 0;
+        }
+
+        .cover-letter-preview {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 2rem;
+            min-height: 600px;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+        }
+
+        .cover-letter-template {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cover-letter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .sender-info p,
+        .date-info p {
+            margin: 0.25rem 0;
+            color: #333;
+        }
+
+        .cover-letter-recipient {
+            margin-bottom: 2rem;
+        }
+
+        .cover-letter-recipient p {
+            margin: 0.25rem 0;
+            color: #333;
+        }
+
+        .cover-letter-salutation {
+            margin-bottom: 1.5rem;
+        }
+
+        .cover-letter-body {
+            margin-bottom: 2rem;
+        }
+
+        .cover-letter-body p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .cover-letter-closing {
+            margin-top: 3rem;
+        }
+
+        .cover-letter-closing p {
+            margin: 0.5rem 0;
+            color: #333;
+        }
+
+        /* Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin-left: 15px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .cover-letter-builder {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .input-section {
+                padding-right: 0;
+                border-right: none;
+                border-bottom: 2px solid #f0f0f0;
+                padding-bottom: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>GEN-AI</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="resume.html">Resume Builder</a></li>
+                <li><a href="cover-letter.html" class="active">Cover Letter</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#how-it-works">How It Works</a></li>
+                <li><a href="index.html#team">Team</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cover-letter-container">
+        <div class="container">
+            <h1 class="page-title">AI Cover Letter Generator</h1>
+            <p class="page-subtitle">Create a personalized cover letter with AI assistance</p>
+
+            <div class="cover-letter-builder">
+                <!-- Input Form -->
+                <div class="input-section">
+                    <form id="cover-letter-form">
+                        <!-- Job Details -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-briefcase"></i> Job Details</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="jobTitle">Job Title *</label>
+                                    <input type="text" id="jobTitle" name="jobTitle" required placeholder="e.g. Software Engineer">
+                                </div>
+                                <div class="form-group">
+                                    <label for="companyName">Company Name *</label>
+                                    <input type="text" id="companyName" name="companyName" required placeholder="e.g. Tech Solutions Inc.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hiringManager">Hiring Manager Name</label>
+                                    <input type="text" id="hiringManager" name="hiringManager" placeholder="e.g. John Smith">
+                                </div>
+                                <div class="form-group">
+                                    <label for="companyAddress">Company Address</label>
+                                    <input type="text" id="companyAddress" name="companyAddress" placeholder="e.g. 123 Business St, City, State">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Your Information -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-user"></i> Your Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="yourName">Your Full Name *</label>
+                                    <input type="text" id="yourName" name="yourName" required placeholder="e.g. Jane Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label for="yourAddress">Your Address</label>
+                                    <input type="text" id="yourAddress" name="yourAddress" placeholder="e.g. 456 Home Ave, City, State">
+                                </div>
+                                <div class="form-group">
+                                    <label for="yourEmail">Your Email *</label>
+                                    <input type="email" id="yourEmail" name="yourEmail" required placeholder="e.g. jane.doe@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="yourPhone">Your Phone</label>
+                                    <input type="tel" id="yourPhone" name="yourPhone" placeholder="e.g. (555) 123-4567">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills & Experience -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-tools"></i> Relevant Skills & Experience</h3>
+                            <div class="form-group">
+                                <label for="relevantSkills">Key Skills (comma separated)</label>
+                                <input type="text" id="relevantSkills" name="relevantSkills" placeholder="e.g., JavaScript, React, Node.js, Python">
+                            </div>
+                            <div class="form-group">
+                                <label for="relevantExperience">Relevant Experience</label>
+                                <textarea id="relevantExperience" name="relevantExperience" placeholder="Describe your relevant experience and achievements"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-info-circle"></i> Additional Information</h3>
+                            <div class="form-group">
+                                <label for="additionalInfo">Why you're interested in this position?</label>
+                                <textarea id="additionalInfo" name="additionalInfo" placeholder="Explain why you're interested in this role and company"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="generate-ai-cover-letter" class="btn btn-primary">
+                                <i class="fas fa-robot"></i> Generate AI Cover Letter
+                            </button>
+                            <button type="button" id="preview-cover-letter" class="btn btn-success">
+                                <i class="fas fa-eye"></i> Preview Cover Letter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <div class="preview-header">
+                        <h3>Cover Letter Preview</h3>
+                        <button id="download-cover-letter" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
+                    <div class="cover-letter-preview" id="cover-letter-preview">
+                        <!-- Cover letter preview will be generated here -->
+                        <div class="cover-letter-template">
+                            <div class="cover-letter-header">
+                                <div class="sender-info">
+                                    <p id="preview-your-name">Your Name</p>
+                                    <p id="preview-your-address">Your Address</p>
+                                    <p id="preview-your-contact">Email | Phone</p>
+                                </div>
+                                <div class="date-info">
+                                    <p id="preview-date">Current Date</p>
+                                </div>
+                            </div>
+                            
+                            <div class="cover-letter-recipient">
+                                <p id="preview-hiring-manager">Hiring Manager Name</p>
+                                <p id="preview-company-name">Company Name</p>
+                                <p id="preview-company-address">Company Address</p>
+                            </div>
+                            
+                            <div class="cover-letter-salutation">
+                                <p id="preview-salutation">Dear [Hiring Manager],</p>
+                            </div>
+                            
+                            <div class="cover-letter-body">
+                                <div id="preview-cover-letter-content">
+                                    <p>Your AI-generated cover letter content will appear here...</p>
+                                </div>
+                            </div>
+                            
+                            <div class="cover-letter-closing">
+                                <p>Sincerely,</p>
+                                <p id="preview-closing-name">Your Name</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cover Letter Generator Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing cover letter builder...');
+            
+            // Initialize date
+            updatePreviewDate();
+            
+            // Generate AI Cover Letter
+            const generateBtn = document.getElementById('generate-ai-cover-letter');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', function() {
+                    console.log('Generate AI Cover Letter button clicked');
+                    
+                    const jobTitle = document.getElementById('jobTitle').value;
+                    const companyName = document.getElementById('companyName').value;
+                    const yourName = document.getElementById('yourName').value;
+                    const yourEmail = document.getElementById('yourEmail').value;
+                    const relevantSkills = document.getElementById('relevantSkills').value;
+                    
+                    if (!jobTitle || !companyName || !yourName || !yourEmail) {
+                        showNotification('Please fill in all required fields (marked with *)', 'error');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const button = this;
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                    button.disabled = true;
+                    
+                    // Call AI function to generate cover letter
+                    generateAICoverLetter(jobTitle, companyName, yourName, relevantSkills)
+                        .then(coverLetter => {
+                            document.getElementById('preview-cover-letter-content').innerHTML = coverLetter;
+                            updatePreviewFromForm();
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            showNotification('AI Cover Letter generated successfully!', 'success');
+                            console.log('Cover letter generated successfully');
+                        })
+                        .catch(error => {
+                            console.error('Error generating AI cover letter:', error);
+                            // Fallback cover letter
+                            document.getElementById('preview-cover-letter-content').innerHTML = 
+                                `<p>I am writing to express my interest in the ${jobTitle} position at ${companyName}. With my skills in ${relevantSkills || 'various technologies'}, I believe I would be a valuable addition to your team.</p>
+                                <p>My experience and qualifications make me well-suited for this role, and I am excited about the opportunity to contribute to your company's success.</p>
+                                <p>Thank you for considering my application. I look forward to the possibility of discussing this opportunity further.</p>`;
+                            updatePreviewFromForm();
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            showNotification('Basic cover letter generated (AI service unavailable)', 'info');
+                        });
+                });
+            } else {
+                console.error('Generate button not found!');
+            }
+            
+            // Preview Cover Letter Button
+            const previewBtn = document.getElementById('preview-cover-letter');
+            if (previewBtn) {
+                previewBtn.addEventListener('click', function() {
+                    console.log('Preview Cover Letter button clicked');
+                    updatePreviewFromForm();
+                    showNotification('Cover Letter preview updated!', 'success');
+                });
+            }
+            
+            // Download Cover Letter
+            // Download Cover Letter as PDF
+            const downloadBtn = document.getElementById('download-cover-letter');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', function() {
+                    const contentElement = document.getElementById('preview-cover-letter-content');
+                    if (contentElement.textContent.includes('Your AI-generated cover letter content will appear here')) {
+                        showNotification('Please generate a cover letter first', 'error');
+                        return;
+                    }
+                    
+                    // Show loading state for download
+                    const button = this;
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+                    button.disabled = true;
+                    
+                    // Generate PDF
+                    generatePDF()
+                        .then(() => {
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            showNotification('PDF downloaded successfully!', 'success');
+                        })
+                        .catch(error => {
+                            console.error('Error generating PDF:', error);
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            showNotification('Error generating PDF. Please try again.', 'error');
+                        });
+                });
+            }
+                        
+            // Auto-update preview when typing in form fields
+            setupAutoPreview();
+            
+            console.log('Cover letter builder initialized successfully');
+        });
+
+        function updatePreviewFromForm() {
+            const formData = {
+                jobTitle: document.getElementById('jobTitle').value,
+                companyName: document.getElementById('companyName').value,
+                hiringManager: document.getElementById('hiringManager').value,
+                companyAddress: document.getElementById('companyAddress').value,
+                yourName: document.getElementById('yourName').value,
+                yourAddress: document.getElementById('yourAddress').value,
+                yourEmail: document.getElementById('yourEmail').value,
+                yourPhone: document.getElementById('yourPhone').value
+            };
+            
+            // Update sender information
+            document.getElementById('preview-your-name').textContent = formData.yourName || 'Your Name';
+            document.getElementById('preview-your-address').textContent = formData.yourAddress || 'Your Address';
+            document.getElementById('preview-your-contact').textContent = 
+                `${formData.yourEmail || 'Email'}${formData.yourPhone ? ` | ${formData.yourPhone}` : ''}`;
+            
+            // Update recipient information
+            document.getElementById('preview-hiring-manager').textContent = formData.hiringManager || 'Hiring Manager';
+            document.getElementById('preview-company-name').textContent = formData.companyName || 'Company Name';
+            document.getElementById('preview-company-address').textContent = formData.companyAddress || 'Company Address';
+            
+            // Update salutation
+            const salutation = formData.hiringManager ? `Dear ${formData.hiringManager},` : 'Dear Hiring Manager,';
+            document.getElementById('preview-salutation').textContent = salutation;
+            
+            // Update closing name
+            document.getElementById('preview-closing-name').textContent = formData.yourName || 'Your Name';
+        }
+
+        function updatePreviewDate() {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const currentDate = new Date().toLocaleDateString('en-US', options);
+            document.getElementById('preview-date').textContent = currentDate;
+        }
+
+        function setupAutoPreview() {
+            const formFields = [
+                'yourName', 'yourAddress', 'yourEmail', 'yourPhone',
+                'hiringManager', 'companyName', 'companyAddress'
+            ];
+            
+            formFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', updatePreviewFromForm);
+                }
+            });
+        }
+
+        // AI Integration Functions
+        async function generateAICoverLetter(jobTitle, companyName, yourName, skills) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const skillList = skills ? skills.split(',').slice(0, 3).join(', ') : 'relevant technical skills';
+                    const templates = [
+                        `I am writing to express my enthusiastic interest in the ${jobTitle} position at ${companyName}. With my background in ${skillList}, I am confident that I possess the skills and experience necessary to excel in this role and contribute significantly to your team.
+
+Throughout my career, I have developed a strong foundation in ${skillList.split(', ')[0]} and have successfully applied these skills in various projects. My hands-on experience, combined with my passion for innovation, makes me well-prepared to tackle the challenges this position presents.
+
+I am particularly drawn to ${companyName} because of your reputation for excellence in the industry. I am excited about the opportunity to contribute to your team and help drive your company's success forward.
+
+Thank you for considering my application. I have attached my resume for your review and would welcome the opportunity to discuss how my skills and experiences align with your needs.`,
+
+                        `I am thrilled to apply for the ${jobTitle} position at ${companyName}. My expertise in ${skillList} aligns perfectly with the requirements outlined in the job description, and I am eager to bring my dedication and capabilities to your esteemed organization.
+
+My professional journey has equipped me with valuable insights and practical skills that I believe would be highly beneficial to your team. I have consistently demonstrated my ability to adapt to new challenges and deliver quality results in fast-paced environments.
+
+What particularly attracts me to ${companyName} is your outstanding reputation for innovation and your commitment to addressing industry challenges with creative solutions.
+
+I am confident that my background, combined with my enthusiasm for this opportunity, makes me a strong candidate for this position. I look forward to the possibility of contributing to your team's success.`,
+
+                        `With great excitement, I submit my application for the ${jobTitle} role at ${companyName}. My background in ${skillList} and commitment to achieving outstanding results make me an ideal candidate to join your team and contribute to your organization's objectives.
+
+I have successfully applied my skills in various professional settings, consistently delivering quality work and adapting to evolving requirements. My approach combines technical proficiency with strong problem-solving abilities.
+
+I have long admired ${companyName}'s work and would be honored to contribute to your mission and continued success in the industry. Your company's values and approach to business resonate strongly with my own professional philosophy.
+
+I am eager to bring my expertise and fresh perspective to your team and help drive ${companyName}'s initiatives forward while growing professionally within your organization.`
+                    ];
+                    
+                    // Select random template
+                    const selectedTemplate = templates[Math.floor(Math.random() * templates.length)];
+                    const formattedContent = selectedTemplate.split('\n\n').map(paragraph => 
+                        `<p>${paragraph}</p>`
+                    ).join('');
+                    
+                    resolve(formattedContent);
+                }, 2000);
+            });
+        }
+
+        function createDownloadableText() {
+            const yourName = document.getElementById('preview-your-name').textContent;
+            const yourAddress = document.getElementById('preview-your-address').textContent;
+            const yourContact = document.getElementById('preview-your-contact').textContent;
+            const date = document.getElementById('preview-date').textContent;
+            const hiringManager = document.getElementById('preview-hiring-manager').textContent;
+            const companyName = document.getElementById('preview-company-name').textContent;
+            const companyAddress = document.getElementById('preview-company-address').textContent;
+            const salutation = document.getElementById('preview-salutation').textContent;
+            const content = document.getElementById('preview-cover-letter-content').textContent;
+            const closingName = document.getElementById('preview-closing-name').textContent;
+            
+            return `${yourName}
+${yourAddress}
+${yourContact}
+
+${date}
+
+${hiringManager}
+${companyName}
+${companyAddress}
+
+${salutation}
+
+${content}
+
+Sincerely,
+
+${closingName}`;
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button class="notification-close">&times;</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => notification.classList.add('show'), 10);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+            
+            // Close button functionality
+            notification.querySelector('.notification-close').addEventListener('click', function() {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            });
+        }
+
+        // generate pdf 
+
+        function generatePDF() {
+    return new Promise((resolve, reject) => {
+        // Get all the preview content
+        const yourName = document.getElementById('preview-your-name').textContent;
+        const yourAddress = document.getElementById('preview-your-address').textContent;
+        const yourContact = document.getElementById('preview-your-contact').textContent;
+        const date = document.getElementById('preview-date').textContent;
+        const hiringManager = document.getElementById('preview-hiring-manager').textContent;
+        const companyName = document.getElementById('preview-company-name').textContent;
+        const companyAddress = document.getElementById('preview-company-address').textContent;
+        const salutation = document.getElementById('preview-salutation').textContent;
+        const content = document.getElementById('preview-cover-letter-content').innerHTML;
+        const closingName = document.getElementById('preview-closing-name').textContent;
+        
+        // Create HTML content for PDF
+        const pdfContent = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Cover Letter - ${yourName}</title>
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Arial:wght@400;600&display=swap');
+                    
+                    body {
+                        font-family: 'Georgia', serif;
+                        line-height: 1.6;
+                        color: #333;
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 40px;
+                        background: white;
+                    }
+                    
+                    .cover-letter-header {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 40px;
+                        border-bottom: 2px solid #f0f0f0;
+                        padding-bottom: 20px;
+                    }
+                    
+                    .sender-info p {
+                        margin: 5px 0;
+                        font-size: 14px;
+                        color: #333;
+                    }
+                    
+                    .date-info p {
+                        margin: 5px 0;
+                        font-size: 14px;
+                        color: #666;
+                        text-align: right;
+                    }
+                    
+                    .cover-letter-recipient {
+                        margin-bottom: 30px;
+                    }
+                    
+                    .cover-letter-recipient p {
+                        margin: 5px 0;
+                        font-size: 14px;
+                        color: #333;
+                    }
+                    
+                    .cover-letter-salutation {
+                        margin-bottom: 20px;
+                        font-weight: bold;
+                    }
+                    
+                    .cover-letter-body {
+                        margin-bottom: 40px;
+                    }
+                    
+                    .cover-letter-body p {
+                        margin-bottom: 16px;
+                        text-align: justify;
+                        font-size: 14px;
+                        line-height: 1.8;
+                    }
+                    
+                    .cover-letter-closing {
+                        margin-top: 60px;
+                    }
+                    
+                    .cover-letter-closing p {
+                        margin: 5px 0;
+                        font-size: 14px;
+                    }
+                    
+                    .signature-line {
+                        margin-top: 50px;
+                        border-top: 1px solid #333;
+                        width: 200px;
+                        padding-top: 5px;
+                    }
+                    
+                    @media print {
+                        body {
+                            padding: 20px;
+                        }
+                        .cover-letter-header {
+                            margin-bottom: 30px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="cover-letter-header">
+                    <div class="sender-info">
+                        <p><strong>${yourName}</strong></p>
+                        <p>${yourAddress}</p>
+                        <p>${yourContact}</p>
+                    </div>
+                    <div class="date-info">
+                        <p>${date}</p>
+                    </div>
+                </div>
+                
+                <div class="cover-letter-recipient">
+                    <p><strong>${hiringManager}</strong></p>
+                    <p><strong>${companyName}</strong></p>
+                    <p>${companyAddress}</p>
+                </div>
+                
+                <div class="cover-letter-salutation">
+                    <p>${salutation}</p>
+                </div>
+                
+                <div class="cover-letter-body">
+                    ${content}
+                </div>
+                
+                <div class="cover-letter-closing">
+                    <p>Sincerely,</p>
+                    <div class="signature-line"></div>
+                    <p><strong>${closingName}</strong></p>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(pdfContent);
+        printWindow.document.close();
+        
+        // Wait for content to load
+        printWindow.onload = function() {
+            try {
+                // Use browser's print to PDF functionality
+                printWindow.print();
+                
+                // Close the window after a delay
+                setTimeout(() => {
+                    printWindow.close();
+                    resolve();
+                }, 500);
+            } catch (error) {
+                printWindow.close();
+                reject(error);
+            }
+        };
+    });
+}
+    </script>
+</body>
+</html>
