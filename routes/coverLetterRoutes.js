@@ -4,6 +4,7 @@ const { authenticate } = require('../middleware/auth');
 
 // Mock cover letter data (replace with actual database operations)
 let coverLetters = [];
+let coverLetterIdCounter = 1;
 
 // GET all cover letters for authenticated user
 router.get('/', authenticate, (req, res) => {
@@ -69,7 +70,7 @@ router.post('/', authenticate, (req, res) => {
         } = req.body;
 
         const newCoverLetter = {
-            id: Date.now().toString(),
+            id: coverLetterIdCounter.toString(),
             userId: req.user.id,
             jobTitle,
             companyName,
@@ -94,6 +95,9 @@ router.post('/', authenticate, (req, res) => {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
+
+        // Increment counter for next cover letter
+        coverLetterIdCounter++;
 
         coverLetters.push(newCoverLetter);
 
